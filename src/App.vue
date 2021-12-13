@@ -1,17 +1,22 @@
 <template>
   <q-layout view="hHh lpR fFf">
     <q-page-container>
-      <router-view v-slot="{ Component, route }">
-        <transition name="scale" mode="out-in">
-          <component :is="Component" :key="route.path" />
+      <router-view v-slot="{ Component }">
+        <transition
+          name="flip"
+          enter-active-class="animate__animated animate__backInLeft"
+          leave-active-class="animate__animated animate__backOutRight"
+        >
+          <component :is="Component" />
         </transition>
       </router-view>
     </q-page-container>
   </q-layout>
 </template>
+
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Roboto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

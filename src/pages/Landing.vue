@@ -1,31 +1,42 @@
 <script>
-import { ref } from "vue";
+import { ref, inject } from "vue";
 import { useQuasar } from "quasar";
 
 export default {
   setup() {
+    const axios = inject("axios");
     const $q = useQuasar();
 
-    const token = ref("");
+    const token = ref(sessionStorage.getItem("token")) || ref("");
     const list = JSON.parse(sessionStorage.getItem("list")) || ref("");
     const loading = ref(false);
 
-    async function fetchServers() {
-      loading.value = true;
-      await fetch(`https://discord.com/api/v9/users/@me/guilds`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token.value,
-        },
-      }).then((r) =>
-        r.json().then((data) => {
-          list.value = data;
-          sessionStorage.setItem("token", token.value);
-          sessionStorage.setItem("list", JSON.stringify(list.value));
-          loading.value = false;
-        })
-      );
-    }
+    const fetchServers = async () => {
+      try {
+        loading.value = true;
+        await axios
+          .get("https://discord.com/api/v9/users/@me/guilds", {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: token.value,
+            },
+          })
+          .then((response) => {
+            list.value = response.data;
+            sessionStorage.setItem("list", JSON.stringify(list.value));
+            sessionStorage.setItem("token", token.value);
+          });
+      } catch (error) {
+        $q.notify({
+          color: "negative",
+          textColor: "white",
+          icon: "error",
+          message: error.message,
+        });
+      } finally {
+        loading.value = false;
+      }
+    };
 
     return {
       list,
@@ -35,7 +46,7 @@ export default {
       onSubmit() {
         if (!token.value) {
           $q.notify({
-            color: "red-5",
+            color: "warning",
             textColor: "white",
             icon: "warning",
             message: "You have to enter the token.",
@@ -50,7 +61,7 @@ export default {
 </script>
 
 <template>
-  <div class="q-pa-xl">
+  <div class="q-pa-lg">
     <div class="row justify-center">
       <q-form
         @submit="onSubmit"
@@ -118,16 +129,15 @@ export default {
 
 <style lang="sass">
 .guild-card
-  width: 100%
-  min-height: 250px
-  max-width: 250px
+  height: 15rem
+  width: 15rem
   transition: transform 0.2s ease-in-out
   &:hover
     transform: scale(1.02)
 
 .nullGuildIcon
-  height: 100%
-  width: 100%
+   width: 100%
+   height: 100%
 
 a
   text-decoration: none

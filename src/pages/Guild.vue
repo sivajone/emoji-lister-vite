@@ -31,9 +31,9 @@ export default {
 </script>
 
 <template>
-  <div class="q-pa-xl">
+  <div class="q-pa-lg">
     <div class="row justify-center">
-      <div class="q-gutter-md col-12 row justify-center">
+      <div class="q-gutter-sm col-12 row justify-center">
         <q-card v-for="emoji in emojis" :key="emoji.id" class="emoji-card">
           <a
             rel="noopener noreferrer nofollow"
@@ -58,20 +58,19 @@ export default {
       </div>
     </div>
     <q-page-sticky position="top-left" :offset="[18, 18]">
-      <q-btn fab icon="keyboard_return" to="/" color="secondary" />
+      <q-btn fab icon="keyboard_return" to="/" color="primary" />
     </q-page-sticky>
   </div>
 </template>
 
 <style lang="sass">
 .emoji-card
-  width: 100%
-  min-height: 256px
-  max-width: 256px
+  height: 15rem
+  width: 15rem
   transition: transform 0.2s ease-in-out
   &:hover
     transform: scale(1.02)
 .emoji_img
-  width: 256px
-  height: 256px
+  width: 100%
+  height: 100%
 </style>
