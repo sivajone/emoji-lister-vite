@@ -13,6 +13,11 @@ export default defineConfig({
 
     quasar({
       sassVariables: "src/quasar-variables.sass",
+      framework: {
+        config: {
+          dark: "true", // or Boolean true/false
+        },
+      },
     }),
   ],
 });

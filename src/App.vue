@@ -14,23 +14,20 @@
   </q-layout>
 </template>
 
+<script>
+import { useQuasar } from "quasar";
+export default {
+  setup() {
+    const $q = useQuasar();
+    $q.dark.set(true);
+  },
+};
+</script>
 <style>
 #app {
   font-family: Roboto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-}
-
-.scale-enter-active,
-.scale-leave-active {
-  transition: all 0.5s ease;
-}
-
-.scale-enter-from,
-.scale-leave-to {
-  opacity: 0;
-  transform: scale(0.9);
 }
 </style>

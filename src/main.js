@@ -28,7 +28,6 @@ app.use(Quasar, {
     Notify,
   }, // import Quasar plugins and add here
   iconSet: quasarIconSet,
-  config: {},
 });
 app.use(VueAxios, axios);
 app.provide("axios", app.config.globalProperties.axios);
