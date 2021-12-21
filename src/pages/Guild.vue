@@ -1,77 +1,101 @@
 <script>
+import { ref, inject } from "vue";
+import { useQuasar } from "quasar";
 export default {
-  data() {
-    return {
-      token: sessionStorage.getItem("token"),
-      emojis: null,
-      loading: null,
-    };
-  },
-  created() {
-    this.fetchServers();
-  },
-  methods: {
-    async fetchServers() {
-      this.loading = true;
-      await fetch(`https://discord.com/api/v9/guilds/${this.id}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: this.token,
-        },
-      })
-        .then((r) =>
-          r.json().then((data) => {
-            this.emojis = data.emojis;
-            this.emojis.forEach((obj) => {
+  props: ["id"],
+  setup(props) {
+    const axios = inject("axios");
+    const $q = useQuasar();
+
+    const emojis = ref("");
+    const token = ref(sessionStorage.getItem("token"));
+    const loading = ref(false);
+
+    const fetchEmojis = async () => {
+      try {
+        await axios
+          .get(`https://discord.com/api/v9/guilds/${props.id}`, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: token.value,
+            },
+          })
+          .then((response) => {
+            emojis.value = response.data.emojis;
+            emojis.value.forEach((obj) => {
               obj["dialog"] = false;
             });
-          })
-        )
-        .finally(() => (this.loading = false));
-    },
+          });
+      } catch (error) {
+        $q.notify({
+          color: "negative",
+          textColor: "white",
+          icon: "error",
+          message: error.message,
+        });
+      } finally {
+        loading.value = false;
+      }
+    };
+    fetchEmojis();
+
+    return {
+      fetchEmojis,
+      emojis,
+      loading,
+    };
   },
-  props: ["id"],
 };
 </script>
 
 <template>
   <div class="q-pa-lg">
     <div class="row justify-center">
-      <div class="q-gutter-sm col-12 row justify-center">
-        <q-spinner-ios v-if="loading" color="primary" size="6em" />
-        <q-card v-for="emoji in emojis" :key="emoji.id" class="emoji-card">
-          <q-img
-            class="emoji_img"
-            fit="contain"
-            :src="'https://cdn.discordapp.com/emojis/' + emoji.id + '?size=256'"
-            @click="emoji.dialog = true"
-          >
-            <div class="absolute-bottom text-subtitle2 text-center">
-              <p class="text-h6 no-margin">{{ emoji.name }}</p>
-            </div>
-          </q-img>
-          <q-dialog v-model="emoji.dialog">
-            <q-card class="emoji__dialogCard">
-              <q-card-section class="row items-center q-pb-none">
-                <div class="text-h6">{{ emoji.name }}</div>
-                <q-space />
-                <q-btn icon="close" flat round dense v-close-popup />
-              </q-card-section>
+      <section v-if="loading">
+        <q-spinner-ios :loading="loading" color="primary" size="6em" />
+      </section>
+      <section class="q-gutter-sm col-12 row justify-center" v-else>
+        <transition-group
+          appear
+          enter-active-class="animate__animated animate__zoomIn"
+        >
+          <q-card v-for="emoji in emojis" :key="emoji.id" class="emoji-card">
+            <q-img
+              class="emoji_img"
+              fit="contain"
+              :src="
+                'https://cdn.discordapp.com/emojis/' + emoji.id + '?size=256'
+              "
+              @click="emoji.dialog = true"
+            >
+              <div class="absolute-bottom text-subtitle2 text-center">
+                <p class="text-h6 no-margin">{{ emoji.name }}</p>
+              </div>
+            </q-img>
+            <q-dialog v-model="emoji.dialog">
+              <q-card>
+                <q-card-section class="row items-center q-pb-none">
+                  <div class="text-h6">{{ emoji.name }}</div>
+                  <q-space />
+                  <q-btn icon="close" flat round dense v-close-popup />
+                </q-card-section>
 
-              <q-card-section>
-                <q-img
-                  :src="
-                    'https://cdn.discordapp.com/emojis/' +
-                    emoji.id +
-                    '?size=2048'
-                  "
-                >
-                </q-img>
-              </q-card-section>
-            </q-card>
-          </q-dialog>
-        </q-card>
-      </div>
+                <q-card-section>
+                  <q-img
+                    :src="
+                      'https://cdn.discordapp.com/emojis/' +
+                      emoji.id +
+                      '?size=2048'
+                    "
+                    spinner-color="primary"
+                  >
+                  </q-img>
+                </q-card-section>
+              </q-card>
+            </q-dialog>
+          </q-card>
+        </transition-group>
+      </section>
     </div>
     <q-page-sticky position="top-left" :offset="[18, 18]">
       <q-btn fab icon="keyboard_return" to="/" color="primary" />

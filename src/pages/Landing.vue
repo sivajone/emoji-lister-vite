@@ -85,9 +85,12 @@ export default {
           label="Fetch"
         />
       </q-form>
-      <div class="col-12 row q-gutter-sm justify-center">
-        <q-card v-for="guild in list" :key="guild.id" class="guild-card">
-          <transition-group appear enter-active-class="animated bounceInRight">
+      <section v-if="!loading" class="col-12 row q-gutter-sm justify-center">
+        <transition-group
+          appear
+          enter-active-class="animate__animated animate__zoomIn"
+        >
+          <q-card v-for="guild in list" :key="guild.id" class="guild-card">
             <router-link :to="guild.id" key="link" class="text-primary">
               <q-img
                 key="img"
@@ -120,9 +123,9 @@ export default {
                 </p>
               </div>
             </router-link>
-          </transition-group>
-        </q-card>
-      </div>
+          </q-card>
+        </transition-group>
+      </section>
     </div>
   </div>
 </template>
