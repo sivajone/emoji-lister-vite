@@ -9,7 +9,7 @@ export default {
 
     const emojis = ref("");
     const token = ref(sessionStorage.getItem("token"));
-    const loading = ref(false);
+    const loading = ref(true);
 
     const fetchEmojis = async () => {
       try {
@@ -37,6 +37,7 @@ export default {
         loading.value = false;
       }
     };
+
     fetchEmojis();
 
     return {
