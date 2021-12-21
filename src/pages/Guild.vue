@@ -55,46 +55,55 @@ export default {
       <section v-if="loading">
         <q-spinner-ios :loading="loading" color="primary" size="6em" />
       </section>
-      <section class="q-gutter-sm col-12 row justify-center" v-else>
+      <section v-else>
         <transition-group
           appear
           enter-active-class="animate__animated animate__zoomIn"
         >
-          <q-card v-for="emoji in emojis" :key="emoji.id" class="emoji-card">
-            <q-img
-              class="emoji_img"
-              fit="contain"
-              :src="
-                'https://cdn.discordapp.com/emojis/' + emoji.id + '?size=256'
-              "
-              @click="emoji.dialog = true"
-            >
-              <div class="absolute-bottom text-subtitle2 text-center">
-                <p class="text-h6 no-margin">{{ emoji.name }}</p>
-              </div>
-            </q-img>
-            <q-dialog v-model="emoji.dialog">
-              <q-card>
-                <q-card-section class="row items-center q-pb-none">
-                  <div class="text-h6">{{ emoji.name }}</div>
-                  <q-space />
-                  <q-btn icon="close" flat round dense v-close-popup />
-                </q-card-section>
+          <section
+            class="q-gutter-sm col-12 row justify-center"
+            v-if="emojis.length > 0"
+          >
+            <q-card v-for="emoji in emojis" :key="emoji.id" class="emoji-card">
+              <q-img
+                class="emoji_img"
+                fit="contain"
+                :src="
+                  'https://cdn.discordapp.com/emojis/' + emoji.id + '?size=256'
+                "
+                @click="emoji.dialog = true"
+              >
+                <div class="absolute-bottom text-subtitle2 text-center">
+                  <p class="text-h6 no-margin">{{ emoji.name }}</p>
+                </div>
+              </q-img>
+              <q-dialog v-model="emoji.dialog">
+                <q-card class="emoji__dialogCard">
+                  <q-card-section class="row items-center q-pb-none">
+                    <div class="text-h6">{{ emoji.name }}</div>
+                    <q-space />
+                    <q-btn icon="close" flat round dense v-close-popup />
+                  </q-card-section>
 
-                <q-card-section>
-                  <q-img
-                    :src="
-                      'https://cdn.discordapp.com/emojis/' +
-                      emoji.id +
-                      '?size=2048'
-                    "
-                    spinner-color="primary"
-                  >
-                  </q-img>
-                </q-card-section>
-              </q-card>
-            </q-dialog>
-          </q-card>
+                  <q-card-section>
+                    <q-img
+                      :src="
+                        'https://cdn.discordapp.com/emojis/' +
+                        emoji.id +
+                        '?size=2048'
+                      "
+                      spinner-color="primary"
+                    >
+                    </q-img>
+                  </q-card-section>
+                </q-card>
+              </q-dialog>
+            </q-card>
+          </section>
+
+          <section v-else>
+            <h2>No emojis 😔</h2>
+          </section>
         </transition-group>
       </section>
     </div>
