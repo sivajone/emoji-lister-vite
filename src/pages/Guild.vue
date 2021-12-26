@@ -56,13 +56,13 @@ export default {
         <q-spinner-ios :loading="loading" color="primary" size="6em" />
       </section>
       <section v-else>
-        <transition-group
-          appear
-          enter-active-class="animate__animated animate__zoomIn"
+        <section
+          class="q-gutter-sm col-12 row justify-center"
+          v-if="emojis.length > 0"
         >
-          <section
-            class="q-gutter-sm col-12 row justify-center"
-            v-if="emojis.length > 0"
+          <transition-group
+            appear
+            enter-active-class="animate__animated animate__zoomIn"
           >
             <q-card v-for="emoji in emojis" :key="emoji.id" class="emoji-card">
               <q-img
@@ -99,12 +99,12 @@ export default {
                 </q-card>
               </q-dialog>
             </q-card>
-          </section>
+          </transition-group>
+        </section>
 
-          <section v-else>
-            <h2>No emojis 😔</h2>
-          </section>
-        </transition-group>
+        <section v-else>
+          <h2>No emojis 😔</h2>
+        </section>
       </section>
     </div>
     <q-page-sticky position="top-left" :offset="[18, 18]">
